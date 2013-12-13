@@ -1,0 +1,47 @@
+Objects
+
+AuthDevice
+Camera
+	active
+	resolution
+	face_detected
+	
+	scan
+	log_user
+NetworkInterface
+	local_address
+	master_address
+	master_port
+	
+	authenticate
+	send_record
+AccessRecord
+	date
+	user
+	user_no
+UserRecord
+	user_no
+	user_name
+	user_pic
+
+	
+	
+Server
+Database
+	size
+	number_of_records
+	
+	add_record
+	rm_record
+	query
+NetworkInterface
+	local_address
+	local_port
+	authed_devices
+	
+	listen
+	reply
+	process
+	
+
+
