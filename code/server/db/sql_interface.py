@@ -2,6 +2,9 @@
 
 import sqlite3 as sql
 import traceback
+import time
+from os import path
+
 
 class SQLInterface:
     __str__ = """object interface for SQLite3 database"""
@@ -9,6 +12,10 @@ class SQLInterface:
         self.db_name = db_fname
         self.db_connection = sql.connect(db_fname)
         self.db_cursor = self.db_connection.cursor()
+    
+    def init_log(self):
+    	if path.exists("logs/"):
+    		pass
         
 
     def create_tables(self):
@@ -75,20 +82,38 @@ class SQLInterface:
         result = self.db_cursor.fetchall()
         return result
 
-    def log_access(self, user_id):
+    def fetch_username(self, user_id):
+    	"""returns name of given user_id"""
+    	sql_q = "select user_name from Users where user_id = ?"
+    	self.db_cursor.execute(sql_q, (user_id,))
+    	return self.db_cursor.fetchone()[0]
+
+
+    def log_access(self, user_id, toggle):
         sql_q = "insert into Access(user_id, log_id, access_date, access_toggle) values (?,?,?,?)"
-        date = dat
-        pass
+        date = time.strftime("%y-%m-%dT%H:%M:%S")
+        access_toggle = int(toggle)
+        on_off = ["OFF", "ON"]
+        msg = "[{0}] {1} toggled the system to {2}".format(date, self.fetch, on_off[access_toggle])
+        self.db_cursor.execute(sql_q, (user_id, "", date, access_toggle))
+
+    def logs_by_user(self, user_id):
+    	sql_q = "select * from Access where user_id = ?"
+    	self.db_cursor.execute(sql_q, (user_id,))
+    	return self.db_cursor.fetchall()
+
+class Config:
+	pass
 
 
 
 if __name__ == "__main__":
     db = SQLInterface("main.db")
-    #db.create_tables()
+    db.create_tables()
     #db.add_user("Harry")
-    users = db.ls_users()
-    print(users)
-    num_users = len(users)
-    db.rm_user(num_users)
+    print(db.ls_users())
+    print(db.fetch_username(1))
+
+    
     
 
