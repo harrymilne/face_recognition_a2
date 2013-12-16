@@ -103,8 +103,17 @@ class SQLInterface:
     	return self.db_cursor.fetchall()
 
 class Config:
-	def __init__(self, log_filen):
-		pass
+    def __init__(self, config_filen):
+        self.prefs = {}
+        if os.path.exists(config_filen):
+            with open(config_filen, mode = "r") as config_f:
+                self.raw_config = config_f.read().splitlines()
+            for line in self.raw_config:
+                idx = line.index("=")
+                self.prefs[line[:idx] = line[idx+1:]
+
+    def createConfig(self):
+        print("Creating default config")
 
 
 
