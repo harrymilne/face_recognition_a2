@@ -48,7 +48,7 @@ class SQLInterface:
                 self.db_cursor.execute(sql_q)
             except sql.OperationalError as e:
                 if e.args[0] == 'table {0} already exists'.format(tbl_name):
-                    print("Table exists.")
+                    print("Table {0} exists.".format(tbl_name))
                 else:
                     traceback.print_exc()
                     print("Table {0} not created.".format(tbl_name))
@@ -58,7 +58,7 @@ class SQLInterface:
         if type(user_name) != type(str()):
             raise Exception("user_name must be string.")
         sql = "insert into Users(user_name) values (?)"
-        self.db_cursor.execute(sql, (user_name,))
+        self.db_cursor.execute(sql, (user_name.lower(),))
         self.db_connection.commit()
 
     def rm_user(self, user_id):
@@ -78,7 +78,7 @@ class SQLInterface:
             raise Exception("user_name must be string.")
 
         sql_q = "select * from Users where user_name = ?"
-        self.db_cursor.execute(sql_q, (user_name,))
+        self.db_cursor.execute(sql_q, (user_name.lower(),))
         result = self.db_cursor.fetchall()
         return result
 
@@ -103,16 +103,14 @@ class SQLInterface:
     	return self.db_cursor.fetchall()
 
 class Config:
-	pass
+	def __init__(self, log_filen):
+		pass
 
 
 
 if __name__ == "__main__":
     db = SQLInterface("main.db")
     db.create_tables()
-    #db.add_user("Harry")
-    print(db.ls_users())
-    print(db.fetch_username(1))
 
     
     
