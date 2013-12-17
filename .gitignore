@@ -1,0 +1,7 @@
+#python generated
+*.pyc
++__pycache__
+
+#project generated
+*.db
+*.ini

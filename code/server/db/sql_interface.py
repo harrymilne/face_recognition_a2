@@ -3,19 +3,25 @@
 import sqlite3 as sql
 import traceback
 import time
-from os import path
+from os import listdir, path
 
 
 class SQLInterface:
     __str__ = """object interface for SQLite3 database"""
-    def __init__(self, db_fname):
+    def __init__(self, db_fname, config_dict):
         self.db_name = db_fname
         self.db_connection = sql.connect(db_fname)
         self.db_cursor = self.db_connection.cursor()
+        self.config = config_dict
+        
     
     def init_log(self):
-    	if path.exists("logs/"):
-    		pass
+    	if path.exists(self.config["log_folder"]):
+    		if len(listdir(self.config_dict["log_folder"])) == 0:
+                    self.create_log_file()
+                    
+                    
+                    
         
 
     def create_tables(self):
@@ -88,6 +94,15 @@ class SQLInterface:
     	self.db_cursor.execute(sql_q, (user_id,))
     	return self.db_cursor.fetchone()[0]
 
+    def create_log_file(self):
+        datetime = time.strftime("%y-%m-%dT%H:%M:%S")
+        log_filen = datetime+".log"
+        with open(date+self.prefs["log_folder"]+log_filen, mode="w", encoding="utf-8"):
+            pass
+        sql_q = "insert into Log(log_filen, log_created) values (?,?)"
+        self.db_cursor.execute(sql_q, (log_filen, datetime))
+        self.db_connection.commit()
+        
 
     def log_access(self, user_id, toggle):
         sql_q = "insert into Access(user_id, log_id, access_date, access_toggle) values (?,?,?,?)"
@@ -105,21 +120,29 @@ class SQLInterface:
 class Config:
     def __init__(self, config_filen):
         self.prefs = {}
-        if os.path.exists(config_filen):
-            with open(config_filen, mode = "r") as config_f:
+        if path.exists(config_filen):
+            with open(config_filen, mode = "r", encoding="utf-8") as config_f:
                 self.raw_config = config_f.read().splitlines()
             for line in self.raw_config:
                 idx = line.index("=")
-                self.prefs[line[:idx] = line[idx+1:]
+                self.prefs[line[:idx]] = line[idx+1:]
+        else:
+            print("{0} does not exist".format(config_filen))
+            self.create_config(config_filen)
 
-    def createConfig(self):
+    def create_config(self, config_filen):
         print("Creating default config")
+        with open(config_filen, mode="w", encoding="utf-8") as config_f:
+            config_f.write("log_folder=logs/")
+        self.__init__(config_filen)
 
 
 
 if __name__ == "__main__":
-    db = SQLInterface("main.db")
-    db.create_tables()
+    cfg = Config("config.ini")
+    db = SQLInterface("main.db", cfg.prefs)
+    print(cfg.prefs)
+    
 
     
     
