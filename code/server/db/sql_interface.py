@@ -3,7 +3,7 @@
 import sqlite3 as sql
 import traceback
 import time
-from os import listdir, path
+from os import listdir, path, mkdir
 
 
 class SQLInterface:
@@ -13,12 +13,16 @@ class SQLInterface:
         self.db_connection = sql.connect(db_fname)
         self.db_cursor = self.db_connection.cursor()
         self.config = config_dict
+        self.init_log()
         
     
     def init_log(self):
-    	if path.exists(self.config["log_folder"]):
-    		if len(listdir(self.config_dict["log_folder"])) == 0:
-                    self.create_log_file()
+        if path.exists(self.config["log_folder"]):
+            if len(listdir(self.config["log_folder"])) == 0:
+                self.create_log_file()
+        else:
+            mkdir(self.config["log_folder"])
+            self.create_log_file()
                     
                     
                     
@@ -95,13 +99,19 @@ class SQLInterface:
     	return self.db_cursor.fetchone()[0]
 
     def create_log_file(self):
-        datetime = time.strftime("%y-%m-%dT%H:%M:%S")
-        log_filen = datetime+".log"
-        with open(date+self.prefs["log_folder"]+log_filen, mode="w", encoding="utf-8"):
+        datetime = time.strftime("%y-%m-%dT%H%M%S")
+        log_filen = date.strip(":")+".log"
+        with open(self.config["log_folder"]+log_filen, mode="w", encoding="utf-8"):
             pass
         sql_q = "insert into Log(log_filen, log_created) values (?,?)"
         self.db_cursor.execute(sql_q, (log_filen, datetime))
         self.db_connection.commit()
+
+    def get_latest_log(self):
+        sql_q = "select * from Log"
+        self.db_cursor.execute(sql_q)
+        log_files = self.db_cursor.fetchall()
+        return log_files
         
 
     def log_access(self, user_id, toggle):
@@ -142,6 +152,7 @@ if __name__ == "__main__":
     cfg = Config("config.ini")
     db = SQLInterface("main.db", cfg.prefs)
     print(cfg.prefs)
+    print(db.get_latest_log())
     
 
     
