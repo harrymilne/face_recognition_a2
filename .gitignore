@@ -2,6 +2,9 @@
 *.pyc
 +__pycache__
 
+virt	#virtualenv
+
+
 #project generated
 *.db
 *.ini
