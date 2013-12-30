@@ -2,8 +2,8 @@
 *.pyc
 +__pycache__
 
-virt	#virtualenv
-
+#folders
+virt
 
 #project generated
 *.db
