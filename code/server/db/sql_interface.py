@@ -1,27 +1,29 @@
 ##SQL Interface
 
-import sqlite3 as sql
 import traceback
 import time
-from os import listdir, path, mkdir
+import sqlite3 as sql
 
+from os import listdir, path, makedirs
+from configparser import ConfigParser
 
 class SQLInterface:
     __str__ = """object interface for SQLite3 database"""
-    def __init__(self, db_fname, config_dict):
+    def __init__(self, db_fname, cfg):
         self.db_name = db_fname
         self.db_connection = sql.connect(db_fname)
         self.db_cursor = self.db_connection.cursor()
-        self.config = config_dict
+        self.config = cfg
+        self.log_folder = cfg["logs"]["log_folder"]
         self.init_log()
         
     
     def init_log(self):
-        if path.exists(self.config["log_folder"]):
-            if len(listdir(self.config["log_folder"])) == 0:
+        if path.exists(self.log_folder):
+            if len(listdir(self.log_folder)) == 0:
                 self.create_log_file()
         else:
-            mkdir(self.config["log_folder"])
+            makedirs(self.log_folder)
             self.create_log_file()
                     
                     
@@ -101,57 +103,47 @@ class SQLInterface:
     def create_log_file(self):
         datetime = time.strftime("%y-%m-%dT%H%M%S")
         log_filen = date.strip(":")+".log"
-        with open(self.config["log_folder"]+log_filen, mode="w", encoding="utf-8"):
+        with open(self.log_folder+log_filen, mode="w", encoding="utf-8"):
             pass
         sql_q = "insert into Log(log_filen, log_created) values (?,?)"
         self.db_cursor.execute(sql_q, (log_filen, datetime))
         self.db_connection.commit()
 
     def get_latest_log(self):
-        sql_q = "select * from Log"
+        sql_q = "select * from Log where log_id=(SELECT MAX(log_id) FROM Log)"
         self.db_cursor.execute(sql_q)
-        log_files = self.db_cursor.fetchall()
-        return log_files
-        
+        log_file = self.db_cursor.fetchone()
+        return log_file
+
+    def append_latest_log(self, msg):
+        path = self.config["logs"]["log_folder"] + self.get_latest_log()[1]
+        with open(path, mode="a", encoding="utf-8") as log_f:
+            log_f.write(msg+"\n")
 
     def log_access(self, user_id, toggle):
         sql_q = "insert into Access(user_id, log_id, access_date, access_toggle) values (?,?,?,?)"
         date = time.strftime("%y-%m-%dT%H:%M:%S")
         access_toggle = int(toggle)
         on_off = ["OFF", "ON"]
-        msg = "[{0}] {1} toggled the system to {2}".format(date, self.fetch, on_off[access_toggle])
-        self.db_cursor.execute(sql_q, (user_id, "", date, access_toggle))
+        msg = "[{0}] {1} toggled the system to {2}".format(date, self.fetch_username(user_id), on_off[access_toggle])
+        log_id, log_filen = self.get_latest_log()[:-1]
+        path = self.config["logs"]["log_folder"] + self.get_latest_log()[1]
+        with open(self.log_folder+log_filen, mode="a", encoding="utf-8") as log_f:
+            log_f.write(msg+"\n")
+        self.db_cursor.execute(sql_q, (user_id, log_id, date, access_toggle))
 
     def logs_by_user(self, user_id):
     	sql_q = "select * from Access where user_id = ?"
     	self.db_cursor.execute(sql_q, (user_id,))
     	return self.db_cursor.fetchall()
 
-class Config:
-    def __init__(self, config_filen):
-        self.prefs = {}
-        if path.exists(config_filen):
-            with open(config_filen, mode = "r", encoding="utf-8") as config_f:
-                self.raw_config = config_f.read().splitlines()
-            for line in self.raw_config:
-                idx = line.index("=")
-                self.prefs[line[:idx]] = line[idx+1:]
-        else:
-            print("{0} does not exist".format(config_filen))
-            self.create_config(config_filen)
-
-    def create_config(self, config_filen):
-        print("Creating default config")
-        with open(config_filen, mode="w", encoding="utf-8") as config_f:
-            config_f.write("log_folder=logs/")
-        self.__init__(config_filen)
-
 
 
 if __name__ == "__main__":
-    cfg = Config("config.ini")
-    db = SQLInterface("main.db", cfg.prefs)
-    print(cfg.prefs)
+    cfg = ConfigParser()
+    cfg.read("config.ini")
+    db = SQLInterface("main.db", cfg)
+    #print(cfg.prefs)
     print(db.get_latest_log())
     
 
