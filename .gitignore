@@ -4,6 +4,7 @@
 
 #folders
 virt
+logs
 
 #project generated
 *.db
