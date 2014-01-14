@@ -4,8 +4,9 @@ import traceback
 import time
 import sqlite3 as sql
 
+from io import open
 from os import listdir, path, makedirs
-from configparser import ConfigParser
+from ConfigParser import ConfigParser
 
 class SQLInterface:
     __str__ = """object interface for SQLite3 database"""
@@ -14,7 +15,7 @@ class SQLInterface:
         self.db_connection = sql.connect(db_fname)
         self.db_cursor = self.db_connection.cursor()
         self.config = cfg
-        self.log_folder = cfg["logs"]["log_folder"]
+        self.log_folder = cfg.get("logs","log_folder")
         self.init_log()
         
     
@@ -102,7 +103,7 @@ class SQLInterface:
 
     def create_log_file(self):
         datetime = time.strftime("%y-%m-%dT%H%M%S")
-        log_filen = date.strip(":")+".log"
+        log_filen = datetime.strip(":")+".log"
         with open(self.log_folder+log_filen, mode="w", encoding="utf-8"):
             pass
         sql_q = "insert into Log(log_filen, log_created) values (?,?)"
@@ -143,9 +144,11 @@ if __name__ == "__main__":
     cfg = ConfigParser()
     cfg.read("config.ini")
     db = SQLInterface("main.db", cfg)
+    #db.create_tables()
     #print(cfg.prefs)
+    #print(db.fetch_username(1))
     print(db.get_latest_log())
-    
+    #db.create_log_file()
 
     
     
