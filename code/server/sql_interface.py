@@ -10,26 +10,24 @@ from ConfigParser import ConfigParser
 
 class SQLInterface:
     __str__ = """object interface for SQLite3 database"""
-    def __init__(self, db_fname, cfg):
+    def __init__(self, db_fname):
         self.db_name = db_fname
         self.db_connection = sql.connect(db_fname)
         self.db_cursor = self.db_connection.cursor()
-        self.config = cfg
-        self.log_folder = cfg.get("logs","log_folder")
+        config = ConfigParser()
+        config.read("server.cfg")
+        self.log_path = config.get("logs","log_path")
         self.init_log()
+        self.create_tables()
         
-    
     def init_log(self):
-        if path.exists(self.log_folder):
-            if len(listdir(self.log_folder)) == 0:
+        print(self.log_path)
+        if path.exists(self.log_path):
+            if len(listdir(self.log_path)) == 0:
                 self.create_log_file()
         else:
-            makedirs(self.log_folder)
+            makedirs(self.log_path)
             self.create_log_file()
-                    
-                    
-                    
-        
 
     def create_tables(self):
 
@@ -80,9 +78,9 @@ class SQLInterface:
         self.db_connection.commit()
 
     def ls_users(self):
-        sql_q = "select * from Users"
+        sql_q = "select user_name from Users"
         self.db_cursor.execute(sql_q)
-        user_list = self.db_cursor.fetchall()
+        user_list = [user[0] for user in self.db_cursor.fetchall()]
         return user_list
 
     def fetch_user_id(self, user_name):
@@ -92,7 +90,7 @@ class SQLInterface:
 
         sql_q = "select * from Users where user_name = ?"
         self.db_cursor.execute(sql_q, (user_name.lower(),))
-        result = self.db_cursor.fetchall()
+        result = self.db_cursor.fetchone()[0]
         return result
 
     def fetch_username(self, user_id):
@@ -121,12 +119,13 @@ class SQLInterface:
         with open(path, mode="a", encoding="utf-8") as log_f:
             log_f.write(msg+"\n")
 
-    def log_access(self, user_id, toggle):
+    def log_access(self, user_name, toggle):
         sql_q = "insert into Access(user_id, log_id, access_date, access_toggle) values (?,?,?,?)"
+        user_id = self.fetch_user_id(user_name)
         date = time.strftime("%y-%m-%dT%H:%M:%S")
         access_toggle = int(toggle)
         on_off = ["OFF", "ON"]
-        msg = "[{0}] {1} toggled the system to {2}".format(date, self.fetch_username(user_id), on_off[access_toggle])
+        msg = "[{0}] {1} toggled the system to {2}".format(date, user_name, on_off[access_toggle])
         log_id, log_filen = self.get_latest_log()[:-1]
         path = self.config["logs"]["log_folder"] + self.get_latest_log()[1]
         with open(self.log_folder+log_filen, mode="a", encoding="utf-8") as log_f:
@@ -141,13 +140,12 @@ class SQLInterface:
 
 
 if __name__ == "__main__":
-    cfg = ConfigParser()
-    cfg.read("config.ini")
-    db = SQLInterface("main.db", cfg)
+    db = SQLInterface("access.sqlite3")
+    db.add_user("harry")
     #db.create_tables()
     #print(cfg.prefs)
     #print(db.fetch_username(1))
-    print(db.get_latest_log())
+    #print(db.get_latest_log())
     #db.create_log_file()
 
     

@@ -7,5 +7,5 @@ virt
 logs
 
 #project generated
-*.db
+*.sqlite3
 *.ini
