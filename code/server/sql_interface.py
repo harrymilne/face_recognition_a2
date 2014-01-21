@@ -16,7 +16,7 @@ class SQLInterface:
         self.db_cursor = self.db_connection.cursor()
         config = ConfigParser()
         config.read("server.cfg")
-        self.log_path = config.get("logs","log_path")
+        self.log_path = config.get("access_logs","log_path")
         self.init_log()
         self.create_tables()
         
@@ -94,15 +94,15 @@ class SQLInterface:
         return result
 
     def fetch_username(self, user_id):
-    	"""returns name of given user_id"""
-    	sql_q = "select user_name from Users where user_id = ?"
-    	self.db_cursor.execute(sql_q, (user_id,))
-    	return self.db_cursor.fetchone()[0]
+        """returns name of given user_id"""
+        sql_q = "select user_name from Users where user_id = ?"
+        self.db_cursor.execute(sql_q, (user_id,))
+        return self.db_cursor.fetchone()[0]
 
     def create_log_file(self):
         datetime = time.strftime("%y-%m-%dT%H%M%S")
         log_filen = datetime.strip(":")+".log"
-        with open(self.log_folder+log_filen, mode="w", encoding="utf-8"):
+        with open(self.log_path+log_filen, mode="w", encoding="utf-8"):
             pass
         sql_q = "insert into Log(log_filen, log_created) values (?,?)"
         self.db_cursor.execute(sql_q, (log_filen, datetime))
@@ -115,7 +115,7 @@ class SQLInterface:
         return log_file
 
     def append_latest_log(self, msg):
-        path = self.config["logs"]["log_folder"] + self.get_latest_log()[1]
+        path = self.log_path + self.get_latest_log()[1]
         with open(path, mode="a", encoding="utf-8") as log_f:
             log_f.write(msg+"\n")
 
@@ -133,9 +133,9 @@ class SQLInterface:
         self.db_cursor.execute(sql_q, (user_id, log_id, date, access_toggle))
 
     def logs_by_user(self, user_id):
-    	sql_q = "select * from Access where user_id = ?"
-    	self.db_cursor.execute(sql_q, (user_id,))
-    	return self.db_cursor.fetchall()
+        sql_q = "select * from Access where user_id = ?"
+        self.db_cursor.execute(sql_q, (user_id,))
+        return self.db_cursor.fetchall()
 
 
 
