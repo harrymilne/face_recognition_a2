@@ -9,3 +9,7 @@ logs
 #project generated
 *.sqlite3
 *.ini
+
+#system files
+*.bat
+*.sh

@@ -5,13 +5,11 @@ from sql_interface import SQLInterface
 
 import logging
 
-
 class Handler(LineReceiver):    
     delimiter = b'\n'
-    def __init__(self):
+    def __init__(self, parent):
+        self.parent = parent
         self.sql = SQLInterface("access.sqlite3")
-        self.alarm_state = False
-
 
     def connectionMade(self):
         peer = self.transport.getPeer()
@@ -23,12 +21,16 @@ class Handler(LineReceiver):
         if data_list[0].lower() == "request":
             if data_list[1] in self.sql.ls_users():
                 log.msg("{} recognised".format(data_list[1]))
-                self.alarm_state = not self.alarm_state
-                self.sendLine("1")
-                self.sql.log_access(data_list[1], self.alarm_state.conjugate())
+                self.parent.STATE = not self.parent.STATE
+                log.msg("state toggled to {}".format(self.parent.STATE))
+                if self.parent.STATE:
+                    self.sendLine("ALARM ON")
+                else:
+                    self.sendLine("ALARM OFF")
+                self.sql.log_access(data_list[1], self.parent.STATE.conjugate())
         else:
             log.msg("ignored command from {}".format(self.peer_sock), logLevel=logging.WARNING)
-            self.sendLine("0")
+            self.sendLine("FAILED")
             self.transport.loseConnection()
 
     def connectionLost(self, reason):
@@ -36,5 +38,6 @@ class Handler(LineReceiver):
 
 
 class Factory(Factory):
+    STATE = False
     def buildProtocol(self, addr):
-        return Handler()
+        return Handler(self)

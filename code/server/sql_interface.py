@@ -31,38 +31,28 @@ class SQLInterface:
 
     def create_tables(self):
 
-        table_queries = [("Users",
-                        """create table Users(
+        table_queries = ["""CREATE TABLE IF NOT EXISTS Users(
                         user_id integer,
                         user_name text,
-                        primary key(user_id))"""),
+                        primary key(user_id))""",
 
-                        ("Access",
-                        """create table Access(
+                        """CREATE TABLE IF NOT EXISTS Access(
                         access_id integer,
                         user_id integer,
                         log_id integer,
                         access_date text,
                         access_toggle integer,
-                        primary key(access_id))"""),
+                        primary key(access_id))""",
 
-                        ("Log",
-                        """create table Log(
+                        """CREATE TABLE IF NOT EXISTS Log(
                         log_id integer,
                         log_filen string,
                         log_created string,
-                        primary key(log_id))""")]
+                        primary key(log_id))"""]
 
 
-        for tbl_name, sql_q in table_queries:
-            try:
-                self.db_cursor.execute(sql_q)
-            except sql.OperationalError as e:
-                if e.args[0] == 'table {0} already exists'.format(tbl_name):
-                    print("Table {0} exists.".format(tbl_name))
-                else:
-                    traceback.print_exc()
-                    print("Table {0} not created.".format(tbl_name))
+        for sql_q in table_queries:
+            self.db_cursor.execute(sql_q)
         self.db_connection.commit()
 
     def add_user(self, user_name):
@@ -125,10 +115,11 @@ class SQLInterface:
         date = time.strftime("%y-%m-%dT%H:%M:%S")
         access_toggle = int(toggle)
         on_off = ["OFF", "ON"]
-        msg = "[{0}] {1} toggled the system to {2}".format(date, user_name, on_off[access_toggle])
+        msg = u"[{0}] {1} toggled the system to {2}".format(date, user_name, on_off[access_toggle])
         log_id, log_filen = self.get_latest_log()[:-1]
-        path = self.config["logs"]["log_folder"] + self.get_latest_log()[1]
-        with open(self.log_folder+log_filen, mode="a", encoding="utf-8") as log_f:
+        path = self.log_path + self.get_latest_log()[1]
+	print(path)
+        with open(path, mode="a", encoding="utf-8") as log_f:
             log_f.write(msg+"\n")
         self.db_cursor.execute(sql_q, (user_id, log_id, date, access_toggle))
 
@@ -142,11 +133,6 @@ class SQLInterface:
 if __name__ == "__main__":
     db = SQLInterface("access.sqlite3")
     db.add_user("harry")
-    #db.create_tables()
-    #print(cfg.prefs)
-    #print(db.fetch_username(1))
-    #print(db.get_latest_log())
-    #db.create_log_file()
 
     
     
