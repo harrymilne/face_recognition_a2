@@ -8,6 +8,7 @@ from PyQt4.QtSql import *
 
 from sqlite_browse_data import *
 from sqlite_connection import *
+from dialogs import *
 
 class BrowserWindow(QMainWindow):
     """Creates the main window for the application"""
@@ -67,6 +68,7 @@ class BrowserWindow(QMainWindow):
         self.setWindowTitle("SQLite Inspector")
 
         #connections
+        new_user.triggered.connect(self.get_name)
         self.load_database.triggered.connect(self.load_database_file)
         self.about.triggered.connect(self.about_application)
         self.refresh_database.triggered.connect(self.refresh)
@@ -92,15 +94,12 @@ class BrowserWindow(QMainWindow):
                 self.db_connection = SQLConnection(path)
             
             ok = self.db_connection.open_database()
-            self.set_up_tab()
+            self.set_up_elements()
 
-    def set_up_tab(self):
+    def set_up_elements(self):
         """updates the current tab by providing the current database connection to the update method of the
-        appropriate main_widget
-
-        Takes one argument:
-            tab - the index value for selected tab
-        """
+        appropriate main_widget"""
+        
         if self.db_connection:
             self.refresh_database.setDisabled(False)
             self.tab_data.update_layout(self.db_connection)
@@ -151,6 +150,15 @@ You should have received a copy of the GNU General Public License along with thi
     def refresh(self):
         if self.tab_bar.currentIndex() == 1:
             self.tab_data.refresh()
+
+    def get_name(self):
+        self.name_dialog = UserCreation()
+        self.name_dialog.name_signal.connect(self.recv_name)
+        self.name_dialog.exec_()
+
+    def recv_name(self, name):
+        print(str(name), "added to the db")
+
 
 
 def main():
