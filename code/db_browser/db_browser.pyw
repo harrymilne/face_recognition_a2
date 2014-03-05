@@ -23,7 +23,7 @@ class BrowserWindow(QMainWindow):
 
         self.menu_new = QMenu("New")
         new_user = self.menu_new.addAction("User")
-        new_user.setDisabled(True)
+        #new_user.setDisabled(True)
         log_file = self.menu_new.addAction("Log File")
         log_file.setDisabled(True)
 
@@ -157,7 +157,7 @@ You should have received a copy of the GNU General Public License along with thi
         self.name_dialog.exec_()
 
     def recv_name(self, name):
-        print(str(name), "added to the db")
+        self.sq
 
 
 

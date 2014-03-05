@@ -28,6 +28,8 @@ class Handler(LineReceiver):
                 else:
                     self.sendLine("ALARM OFF")
                 self.sql.log_access(data_list[1], self.parent.STATE.conjugate())
+        elif data_list[0].lower() == "state":
+            self.sendLine("{}".format(self.parent.STATE))
         else:
             log.msg("ignored command from {}".format(self.peer_sock), logLevel=logging.WARNING)
             self.sendLine("FAILED")

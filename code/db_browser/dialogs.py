@@ -32,7 +32,6 @@ class UserCreation(QDialog):
 
     def submit(self):
         name = str(self.name_field.text())
-        print(name)
         if name.isalpha():
             self.name_signal.emit(name)
             self.done(1)

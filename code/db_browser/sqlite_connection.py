@@ -109,4 +109,3 @@ class SQLConnection:
             self.open_database()
 
         self.query_result = QSqlQuery(sql,db=self.db)
-
