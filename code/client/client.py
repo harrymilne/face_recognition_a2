@@ -33,7 +33,7 @@ class Client:
             if face:
                 result = self.check_face(face)
                 if result:
-                    self.send_auth(result)
+                    self.send_auth(result[0])
     
     def face_detected(self):
         img = self.cam.getImage()
@@ -48,7 +48,15 @@ class Client:
     def check_face(self, face):
         usr_list = os.listdir("data/usr")
         result_list = []
-        for usr in os.listdir("data/usr"):
+        for usr in usr_list:
+            usr_img = SimpleCV.Image("data/usr/"+usr)
+            match = usr_img.findKeypointMatch(face)
+            if match:
+                result_list.append((usr, match))
+        if len(result_list) > 1:
+            return False
+        else:
+            return result_list[0]
 
 
     def send_auth(self, name):
