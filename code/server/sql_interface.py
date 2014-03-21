@@ -118,7 +118,6 @@ class SQLInterface:
         msg = u"[{0}] {1} toggled the system to {2}".format(date, user_name, on_off[access_toggle])
         log_id, log_filen = self.get_latest_log()[:-1]
         path = self.log_path + self.get_latest_log()[1]
-	print(path)
         with open(path, mode="a", encoding="utf-8") as log_f:
             log_f.write(msg+"\n")
         self.db_cursor.execute(sql_q, (user_id, log_id, date, access_toggle))
@@ -132,8 +131,11 @@ class SQLInterface:
 
 if __name__ == "__main__":
     db = SQLInterface("access.sqlite3")
+    db.create_tables()
     db.add_user("harry")
-
+    db.add_user("paul")
+    db.add_user("alyson")
+    db.add_user("ava")
     
-    
+    db.create_log_file()
 

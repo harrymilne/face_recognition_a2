@@ -9,6 +9,7 @@
 \usepackage{float}
 
 \lstset{
+    language=Python,
     breaklines=true,
     numbers=left,
     frame=lines
@@ -52,7 +53,7 @@
     \centering
     \begin{tabular}{|p{4cm}|p{8cm}|}
     \hline
-    Software                & Usage Explanation                                                                                                                                                                                            \\ \hline
+    \textbf{Software}                & \textbf{Usage Explanation}                                                                                                                                                                                            \\ \hline
     Python 2.7              & I used Python 2.7 instead of Python 3.* because of the superior module support that Python 2.5+ has. Also, the nature of Python itself makes it very easy to build systems quickly.                          \\ \hline
     SQLite3                 & SQLite3 was an easy database management system to use because it has little requirements for the system it is run on. This means you do not have to do any extensive configuration of any target system.      \\ \hline
     Twisted 13.2.0          & Twisted is a Python module which lets you very quickly prototype and build clients and servers, which is central to this system.                                                                             \\ \hline
@@ -85,17 +86,54 @@ I structured the code so that each section of the system was an object, abstract
 visualising the code. By doing this I have taken one of the advantage of object-oriented programming; the ability
 to abstract certain situations into particular `objects'.
 
-\subsection{Particular Code Section}
+\subsection{Client Class}
+The class created in `client.py', which can be found in section~\ref{sec:client.py}, includes methods to handle
+!needs updating
 \section{Variable Listing}
 \section{System Evidence}
 \subsection{User Interface}
 \subsection{ER Diagram}
 \begin{center}
-\includegraphics[scale=0.6]{../shared_assets/diagrams/ERD.png}
+\includegraphics[scale=0.3]{../shared_assets/diagrams/ERD.png}
 \end{center}
+
 \subsection{Database Table Views}
+\subsubsection{Users}
+\subsubsection{Access}
+\subsubsection{LogFile}
+
 \subsection{Database SQL}
+
+\lstinputlisting[language=Python, 
+                firstline=32, 
+                lastline=56, 
+                caption=Extract from sql\_interface.py]{../../code/server/sql_interface.py}
+Above, in Listing 1, you can see the function inside the `SQLInterface' class which creates the tables
+within the database. This function \textit{must} be ran before any other inside the class, otherwise
+an exception will be thrown saying either that the database doesn't exist yet or the tables don't exist.
+
+The structure of this function has been coded with the `DRY' (`Don\'t Repeat Yourself') principle in mind;
+instead of running each SQL statement individually, the strings are in a list which can be iterated over.
+
 \subsection{SQL Queries}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{5cm}|p{8cm}|}
+    \hline
+    \textbf{Functionality}                                                                                                                   & \textbf{SQL Statement}                                                                                                                                          \\ \hline
+    Creates a new User with the given user\_name.                                                                   & INSERT INTO Users(user\_name) values (?)                                         \\ \hline
+    Delete a user with a given id.                                                                                  & DELETE FROM Users where user\_id = ?                                             \\ \hline
+    Return all stored user\_name attributes in the Users table.                                                     & SELECT user\_name FROM Users                                                     \\ \hline
+    Return all Users entities with the given user\_name.                                                            & SELECT * from Users WHERE user\_name = ?                                         \\ \hline
+    Return the Users entity with the given user\_id.                                                                & SELECT user\_name FROM Users WHERE user\_id = ?                                  \\ \hline
+    Create new Log entity with the given filename and created date.                                                 & INSERT INTO Log(log\_filen, log\_created) VALUES (?,?)                           \\ \hline
+    Return the Log with the highest id number.                                                                      & SELECT * FROM Log WHERE log\_id=(SELECT MAX(log\_id) FROM Log)                   \\ \hline
+    Create an entity in the Access table with the given attributes; user\_id, log\_id, access\_date and access\_toggle. & INSERT INTO Access(user\_id, log\_id, access\_date, access\_toggle) VALUES (?,?,?,?) \\ \hline
+    Return all Access entities initiated with the given user\_id.                                                   & SELECT * FROM Access WHERE user\_id = ?                                          \\ \hline
+    \end{tabular}
+\end{table}
+
 \section{Testing}
 \subsection{Summary of Results}
 \subsection{Known Issues}
