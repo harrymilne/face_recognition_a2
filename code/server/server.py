@@ -11,11 +11,19 @@ class Handler(LineReceiver):
         self.parent = parent
         self.sql = SQLInterface("access.sqlite3")
 
+
+    def reply_state(self):
+        if self.parent.STATE:
+            self.sendLine("ALARM ON")
+        else:
+            self.sendLine("ALARM OFF")
+
     def connectionMade(self):
         peer = self.transport.getPeer()
         self.peer_sock = ":".join([peer.host, str(peer.port)])
 
     def lineReceived(self, data):
+        print(data)
         data_list = data.split(" ")
         log.msg("line recieved: '{}'".format(data),  logLevel=logging.DEBUG)
         if data_list[0].lower() == "request":
@@ -23,13 +31,10 @@ class Handler(LineReceiver):
                 log.msg("{} recognised".format(data_list[1]))
                 self.parent.STATE = not self.parent.STATE
                 log.msg("state toggled to {}".format(self.parent.STATE))
-                if self.parent.STATE:
-                    self.sendLine("ALARM ON")
-                else:
-                    self.sendLine("ALARM OFF")
+                self.reply_state()
                 self.sql.log_access(data_list[1], self.parent.STATE.conjugate())
         elif data_list[0].lower() == "state":
-            self.sendLine("{}".format(self.parent.STATE))
+            self.reply_state()
         else:
             log.msg("ignored command from {}".format(self.peer_sock), logLevel=logging.WARNING)
             self.sendLine("FAILED")

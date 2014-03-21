@@ -51,6 +51,9 @@ class BrowseDataWidget(QWidget):
         #connections
         self.available_tables.currentIndexChanged.connect(self.change_table)
 
+    def setDisabled(self, trig):
+        self.available_tables.setDisabled(trig)
+
     def update_layout(self,conn):
         """updates the widget to contain entities from the current open database connection
 

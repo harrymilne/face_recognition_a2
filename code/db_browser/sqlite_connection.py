@@ -27,6 +27,7 @@ Licence:
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>
 """
+import time
 
 from PyQt4.QtSql import *
 from PyQt4.QtGui import *
@@ -109,3 +110,21 @@ class SQLConnection:
             self.open_database()
 
         self.query_result = QSqlQuery(sql,db=self.db)
+        print(self.db.commit())
+        print(self.db.lastError().databaseText())
+
+    def add_user(self, name):
+        qsql = QSqlQuery(db=self.db)
+        qsql.prepare("INSERT INTO Users(user_name) VALUES (:name);")
+        qsql.bindValue(":name", name)
+        return qsql.exec_()
+
+    def add_log(self):
+        datetime = time.strftime("%y-%m-%dT%H%M%S")
+        log_filen = datetime.strip(":")+".log"
+
+        qsql = QSqlQuery(db=self.db)
+        qsql.prepare("INSERT INTO Log(log_filen, log_created) VALUES (:log_filen, :log_created)")
+        qsql.bindValue(":log_filen", log_filen)
+        qsql.bindValue(":log_created", datetime)
+        return qsql.exec_()
