@@ -89,6 +89,20 @@ to abstract certain situations into particular `objects'.
 \subsection{Client Class}
 The class created in `client.py', which can be found in section~\ref{sec:client.py}, includes methods to handle
 !needs updating
+
+\subsection{Handler Class}
+The server class created in `server.py' is called `Handler' as shown in section~\ref{sec:server.py} line 8, this is because it `handles' the requests from the
+client. Inside this class there is an `SQLInterface' instantiation to give the server an interface for the `SQLite3'
+database, however, methods that edit the database will only be run after the server knows the user trying to access
+it is already in it. Unfortunately, there is no other security around authenticating users, the only barrier between
+someone sending a string to the server and gaining access is that they don't know the users already in the database.
+
+
+\subsection{SQLInterface Class}
+I structured it this way so that if one needed to access the database from another Python script, they'd
+have a standardised method of doing so. This means they can simply import the package and either instantiate it `as is'
+or use it as a parent class to add functionality.
+
 \section{Variable Listing}
 \section{System Evidence}
 \subsection{User Interface}
@@ -109,10 +123,11 @@ The class created in `client.py', which can be found in section~\ref{sec:client.
                 lastline=56, 
                 caption=Extract from sql\_interface.py]{../../code/server/sql_interface.py}
 Above, in Listing 1, you can see the function inside the `SQLInterface' class which creates the tables
-within the database. This function \textit{must} be ran before any other inside the class, otherwise
-an exception will be thrown saying either that the database doesn't exist yet or the tables don't exist.
+within the database. This function \textit{must} be ran before any other inside the class if the database
+hasn't been initialised before, otherwise an exception will be thrown saying either that the database 
+doesn't exist yet or the tables don't exist.
 
-The structure of this function has been coded with the `DRY' (`Don\'t Repeat Yourself') principle in mind;
+The structure of this function has been coded with the `DRY' (`Don't Repeat Yourself') principle in mind;
 instead of running each SQL statement individually, the strings are in a list which can be iterated over.
 
 \subsection{SQL Queries}
