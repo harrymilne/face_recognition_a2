@@ -1,0 +1,145 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{algorithmic}
+\usepackage{float}
+
+\lstset{
+    language=Python,
+    breaklines=true,
+    numbers=left,
+    frame=lines
+}
+
+\pagestyle{fancyplain}
+
+\title{Evaluation}
+\author{Harry Milne}
+\date{March 2014}
+
+\lhead{Harry Milne}
+\chead{Candidate Number: 2677}
+\rhead{Centre Number: 22169}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+\section{Customer Requirements}
+	
+	\subsection{General Objectives}
+	
+		\begin{itemize}
+			\item Quick and easy to use method of user verification
+
+			The program allows an easy method to toggle the alarm system successfully, all the user has
+			to do is let the program scan their face, therefore this objective has been met. \textit{[Evidence]}
+
+			\item Easy additional user set-up
+
+			Setting up users with the client currently requires a function within the code to be ran,
+			this is within the ability of the user but it is hard to call it `easy'. However, the database
+			has a user interface which works correctly and adding users is very easy. \textit{[Evidence]}
+
+			\item Communication with the server over the network
+
+			The client correctly communicates back and forth with the server across a network. \textit{[Evidence]}
+ 
+			\item Store users and access logs in a SQL database
+
+			Users and logs are stored on the server in an SQL database, this database is only controlled
+			by the system administrator. \textit{[Evidence]}
+		\end{itemize}
+
+	\subsection{Specific Objectives}
+
+		\paragraph{User Verification}
+			\begin{itemize}
+				\item Ability to recognize faces
+
+				The client successfully detects that a face is within the camera region, the `SimpleCV' package
+				handles this very well.
+
+				\item Ability to tell different faces from others
+				
+				After matching the input with the saved files, the client can correctly match an input face with a
+				user that has previously been stored on the file system. \textit{[Evidence]}
+
+				\item Must be able to match a name to that face
+
+				Images of the users are saved to the system with the file name as the user's name, this means there is
+				no further processing to find the user's name after the input has been matched with a file. \textit{[Evidence]}
+			\end{itemize}
+
+		\paragraph{User Set-up}
+
+			\begin{itemize}
+				\item UI to edit each user or add users
+
+				A database UI has been created for the server, however there is no user interface for the client, so I would
+				say this objective is partially met.
+				
+				\item Power user tools
+
+				The set-up allows raw access to the SQLite database, however, there are no power user tools coded into any of
+				the system.
+			\end{itemize}
+
+		\paragraph{Network Communication}
+		
+			\begin{itemize}
+				\item Access to local area network
+				\item Receive commands and send commands
+				\item Secure
+			\end{itemize}
+
+		\paragraph{SQL Database}
+		
+			\begin{itemize}
+				\item Table containing each user
+				\item Access logs with a relationship to a user
+				\item Secure interface with communicating to the database
+			\end{itemize}
+
+	\subsection{Core Objectives}
+		
+		\begin{itemize}
+			\item User verification via face recognition
+			\item Interface with the server
+			\item Server to turn the alarms on and off
+		\end{itemize}
+
+	\subsection{Other Objectives}
+		
+		\begin{itemize}
+			\item Socket encryption
+			\item Control over what time slots people are allowed to turn alarms off
+			\item Ability to edit users from different computers
+		\end{itemize}
+
+\section{Effectiveness}
+
+\section{Learnability}
+
+\section{Usability}
+
+\section{Maintainability}
+
+\section{Suggestions for Improvement}
+
+	\textit{[PLAN]}
+	\begin{itemize}
+		\item Improved accuracy of face recognition
+		\item Secure sockets
+		\item Synced databases
+		\item Authenticated clients 
+	\end{itemize}	
+
+\section{End User Evidence Appendix}
+
+	\subsection{Questionnaire}
+
+\end{document}
