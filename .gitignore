@@ -3,7 +3,7 @@
 +__pycache__
 
 #folders
-virt
+pyenv
 
 #project generated
 *.sqlite3
