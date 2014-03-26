@@ -17,6 +17,7 @@
 
 \pagestyle{fancyplain}
 
+
 \title{User Manual}
 \author{Harry Milne}
 \date{March 2014}
@@ -25,6 +26,9 @@
 \chead{Candidate Number: 2677}
 \rhead{Centre Number: 22169}
 
+\rfoot{\thepage}
+\cfoot{}
+
 \begin{document}
 \maketitle
 \tableofcontents
@@ -32,48 +36,49 @@
 
 \section{Introduction}
 
-The intended audience of this system is a 
+    The intended audience of this system is a normal household, in this case it is Paul Milne's household. Paul himself is very experienced
+    in computing, however the rest of the household have an average IT knowledge.
+
+    The purpose of the system is to provide an easy method to interface with the alarms; to turn them on and off.
 \section{Installation}
-\subsection{Prerequisite Installation}
+    \subsection{Prerequisite Installation}
 
-\subsection{System Installation}
-If you do not already have the files they are available for download at: \url{https://github.com/harrymilne/face_recognition_a2}.
-This repository has two root folders, `code' and `docs', Python files for the running of the client and server are under code.
-Once you are in the code directory this then has 3 folders, `client', `db\_browser' and `server', the `server' and `db\_browser'
-folders need to be on the same computer, whereas the client needs to be placed on a computer with access to a network capable of
-connecting to the computer which has the `server' and `db\_browser' folders on. 
+    \subsection{System Installation}
+        If you do not already have the files they are available for download at: \url{https://github.com/harrymilne/face_recognition_a2}.
+        This repository has two root folders, `code' and `docs', Python files for the running of the client and server are under code.
+        Once you are in the code directory this then has 3 folders, `client', `db\_browser' and `server', the `server' and `db\_browser'
+        folders need to be on the same computer, whereas the client needs to be placed on a computer with access to a network capable of
+        connecting to the computer which has the `server' and `db\_browser' folders on. 
 
-\subsubsection{Client}
-The client software must be installed anywhere you want end-users to be able to control the system, the code can be ran on a 
-raspberry pi or on a `normal computer'. 
-The client (face recognition) requires a Python package called SimpleCV, to install this you must first 
-download the `superpack' from simplecv.org/download (shown in figure~\ref{fig:simplecv}).  This installs all of the dependencies you need for the client program.
+    \subsubsection{Client}
+        The client software must be installed anywhere you want end-users to be able to control the system, the code can be ran on a 
+        raspberry pi or on a `normal computer'. 
+        The client (face recognition) requires a Python package called SimpleCV, to install this you must first 
+        download the `superpack' from simplecv.org/download (shown in figure~\ref{fig:simplecv}).  This installs all of the dependencies you need for the client program.
 
-\begin{figure}[H]
-    \label{fig:simplecv}
-    \centering
-    \caption{A screenshot of the SimpleCV website where it is possible to download the `superpack'.}
-    \includegraphics[scale=0.7]{../shared_assets/screenshots/manual/simplecv_download.png}
-\end{figure}
+        \begin{figure}[H]
+            \centering
+            \caption{A screenshot of the SimpleCV website where it is possible to download the `superpack'.}
+                \includegraphics[scale=0.7]{../shared_assets/screenshots/manual/simplecv_download.png}
+            \label{fig:simplecv}
+        \end{figure}
 
-The files included with the downloaded repository will include an example configuration file called `client.cfg'. As shown
-below in figure~\ref{fig:clientcfg}, this must but set to use values that suite your system needs. To find the `haar\_cascade'
-path you must find where your Python installation resides and check `dist-packages' for the `SimpleCV' folder, then it should
-be under `Features/HaarCascades' as of version 1.3.
+        The files included with the downloaded repository will include an example configuration file called `client.cfg'. As shown
+        below in figure~\ref{lst:clientcfg}, this must but set to use values that suite your system needs. To find the `haar\_cascade'
+        path you must find where your Python installation resides and check `dist-packages' for the `SimpleCV' folder, then it should
+        be under `Features/HaarCascades' as of version 1.3.
 
-\begin{figure}[H]
-    \label{fig:clientcfg}
-    \centering
-    \caption{Example client configuration included in code repository.}
-    \lstinputlisting{../../code/client/client.cfg}
-\end{figure}
+        \begin{figure}[H]
+            \centering
+            \caption{Example client configuration included in code repository.}
+                \lstinputlisting{../../code/client/client.cfg}
+            \label{lst:clientcfg}
+        \end{figure}
 
+        After downloading and installing the relevant `superpack' for your system, you can run the client with Python version 2.7.
 
-
-After downloading and installing the relevant `superpack' for your system, you can run the client with Python version 2.7.
-
-\subsection{Server}
-The serv
+    \subsubsection{Server}
+        The serv
 
 \section{Tutorial}
     \subsection{Introduction}
