@@ -6,6 +6,9 @@
 \usepackage{graphicx}
 \usepackage{algorithmic}
 \usepackage{float}
+\usepackage{url}
+\usepackage{hyperref}
+
 
 \lstset{
     language=Python,
@@ -23,6 +26,9 @@
 \lhead{Harry Milne}
 \chead{Candidate Number: 2677}
 \rhead{Centre Number: 22169}
+
+\cfoot{}
+\rfoot{\thepage}
 
 \begin{document}
 \maketitle
@@ -92,8 +98,20 @@
 		
 			\begin{itemize}
 				\item Access to local area network
+                    
+                    This objective has been met because the server and client sucessfully talk over the local area network
+                    via sockets; the client sending commands to the server and recieving a response.
+
 				\item Receive commands and send commands
+                    
+                    As mentioned in the above objective, commands work from remote hosts. When the client asks the `status' of
+                    alarms, the server responds. Similarly, the server responds when the client wants to register a user 
+                    accessing the system.
 				\item Secure
+                    
+                    The system isn't secure enough for anyone with a certain amount of computing knowledge, as it is possible to
+                    just send commands the the server without being authenticated, meaning that if anyone sends a packet to the
+                    correct port on the server, they can turn the system on or off.
 			\end{itemize}
 
 		\paragraph{SQL Database}
