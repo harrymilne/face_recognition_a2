@@ -11,7 +11,6 @@
 
 
 \lstset{
-    language=Python,
     breaklines=true,
     numbers=left,
     frame=lines
@@ -42,22 +41,23 @@
 			\item Quick and easy to use method of user verification
 
 			The program allows an easy method to toggle the alarm system successfully, all the user has
-			to do is let the program scan their face, therefore this objective has been met. \textit{[Evidence]}
+			to do is let the program scan their face, therefore this objective has been met. (Line 8 in Figure~\ref{lst:interview})
+
 
 			\item Easy additional user set-up
 
 			Setting up users with the client currently requires a function within the code to be ran,
 			this is within the ability of the user but it is hard to call it `easy'. However, the database
-			has a user interface which works correctly and adding users is very easy. \textit{[Evidence]}
+			has a user interface which works correctly and adding users is very easy. (Line 10 in Figure~\ref{lst:interview})
 
 			\item Communication with the server over the network
 
-			The client correctly communicates back and forth with the server across a network. \textit{[Evidence]}
+			The client correctly communicates back and forth with the server across a network. (Line 12 in Figure~\ref{lst:interview})
  
 			\item Store users and access logs in a SQL database
 
 			Users and logs are stored on the server in an SQL database, this database is only controlled
-			by the system administrator. \textit{[Evidence]}
+			by the system administrator. (Line 14 in Figure~\ref{lst:interview})
 		\end{itemize}
 
 	\subsection{Specific Objectives}
@@ -67,17 +67,17 @@
 				\item Ability to recognize faces
 
 				The client successfully detects that a face is within the camera region, the `SimpleCV' package
-				handles this very well.
+				handles this very well. (Line 16 in Figure~\ref{lst:interview})
 
 				\item Ability to tell different faces from others
 				
 				After matching the input with the saved files, the client can correctly match an input face with a
-				user that has previously been stored on the file system. \textit{[Evidence]}
+				user that has previously been stored on the file system. (Line 18 in Figure~\ref{lst:interview})
 
 				\item Must be able to match a name to that face
 
 				Images of the users are saved to the system with the file name as the user's name, this means there is
-				no further processing to find the user's name after the input has been matched with a file. \textit{[Evidence]}
+				no further processing to find the user's name after the input has been matched with a file. (Line 18 in Figure~\ref{lst:interview})
 			\end{itemize}
 
 		\paragraph{User Set-up}
@@ -100,64 +100,182 @@
 				\item Access to local area network
                     
                     This objective has been met because the server and client sucessfully talk over the local area network
-                    via sockets; the client sending commands to the server and recieving a response.
+                    via sockets; the client sending commands to the server and recieving a response. (Line 12 in Figure~\ref{lst:interview})
 
 				\item Receive commands and send commands
                     
                     As mentioned in the above objective, commands work from remote hosts. When the client asks the `status' of
                     alarms, the server responds. Similarly, the server responds when the client wants to register a user 
-                    accessing the system.
+                    accessing the system. (Line 12 in Figure~\ref{lst:interview})
+
 				\item Secure
                     
                     The system isn't secure enough for anyone with a certain amount of computing knowledge, as it is possible to
                     just send commands the the server without being authenticated, meaning that if anyone sends a packet to the
                     correct port on the server, they can turn the system on or off.
+
 			\end{itemize}
 
 		\paragraph{SQL Database}
 		
 			\begin{itemize}
 				\item Table containing each user
-				\item Access logs with a relationship to a user
-				\item Secure interface with communicating to the database
+
+					The Users table contains the user\_id and user\_name attributes.
+
+				\item Access logs with a relationship to a user,
+
+					Each access entry contains a user\_id foreign key which points to the user who triggered that event.
+
+				\item Secure interface with communicating to the database.
+
+					The system isn't secure, it has merely coded to be functional. This is because of a time limitation set by my teacher.
+
 			\end{itemize}
 
 	\subsection{Core Objectives}
 		
 		\begin{itemize}
 			\item User verification via face recognition
+
+				This objective has been met as shown in figure~\ref{lst:interview}.
+
 			\item Interface with the server
+
+				The client talks to the server via the local area network, therefore this objective has been met.
+
 			\item Server to turn the alarms on and off
+
+				This objective has been met as shown in figure~\ref{lst:interview} line 20.
 		\end{itemize}
 
 	\subsection{Other Objectives}
 		
 		\begin{itemize}
 			\item Socket encryption
+
+				Does not exist in the system.
+
 			\item Control over what time slots people are allowed to turn alarms off
+
+				Does not exist in the system.
+
 			\item Ability to edit users from different computers
+
+				Does not exist in the system.
 		\end{itemize}
+
+
+
 
 \section{Effectiveness}
 
-\section{Learnability}
+	\subsection{Specific Objectives}
 
-\section{Usability}
+		\paragraph{User Verification}
+			\begin{itemize}
+
+				\item Must be able to match a name to that face
+
+				This objective could have been carried out better, there is different way to implement user face recognition called HaarCascade. 
+				Unfortunately, the time constraints didn't give me enough time to find a valid way of making adding a user to this method of face
+				recognition easily. HaarCascade takes `training' this is hard to make into some form of user interface.
+
+
+			\end{itemize}
+
+		\paragraph{User Set-up}
+
+			\begin{itemize}
+				\item UI to edit each user or add users
+
+				The database browser allows adding of users by a simple pop-up dialogue, the browser also enables an intuitive `double-click' method
+				of editing existing entities in the table. (Line 22 in Figure~\ref{lst:interview})
+
+			\end{itemize}
+
+
+		\paragraph{SQL Database}
+		
+			\begin{itemize}
+				\item Table containing each user
+
+				The structure of the user database table was simple as it just gave each user an id which could be linked to the related entities.
+
+			\end{itemize}
+
+	\subsection{Core Objectives}
+		
+		\begin{itemize}
+			\item User verification via face recognition
+
+			The problem with this implementation is that it is easily spoofed, there is no `blink detection' to combat the imitation of the user. 
+
+			\item Interface with the server
+
+			The clients commands to the server aren't very effective because there is no source authentication, an ideal fix to this would be some form of
+			initial authentication phase so that the server has the client's unique identifier.
+		\end{itemize}
+
+
+\section{Learnability}
+	The interface of the database browser is similar to other software's user interfaces, this makes it easy to understand. The client expressed this in
+	line 22 figure~\ref{lst:interview}.
+
+	\begin{figure}
+		\begin{center}
+		\caption{A screenshot of the database browser}
+		\label{fig:db_browser}
+		\includegraphics[scale=0.5]{../shared_assets/screenshots/db_browser_eg.png}
+		\end{center}
+	\end{figure}
+
+	Above, in figure~\ref{fig:db_browser}, you can see how the elements match common software interfaces. For example, the `menubar' contains a `file'
+	menu which contains things like `New' and `Open'. The table is also similar to that of excel, you can click to edit. 
+
 
 \section{Maintainability}
 
+	The code in this project is very modular, the different sections of it have been abstracted into classes, not only this but the functions inside these
+	classes are mostly easy to understand since each function has a simple task. However, the code lacks comments in it's current state, so at the individual
+	line level, it may require some more research as to the modules referenced in the code. The code only uses local variables, this means understanding where
+	data comes from is a lot easier to that of a program which takes use of global variables.
+
 \section{Suggestions for Improvement}
 
-	\textit{[PLAN]}
 	\begin{itemize}
 		\item Improved accuracy of face recognition
+
+			The issue with this is in it's current state it takes way too long for the system to take a picture which is sufficient to match with the stored
+			images of the user, this is vital because it is detrimental to the main objective of the system; to make the user authentication easier.
+
 		\item Secure sockets
-		\item Synced databases
+
+			This is a less important issue as the local network will actually already have protection from the fact you need to be connected to it in the first place,
+			however this isn't an assumption I would like to make. The data sent to and from the client and server \textit{should} be encrypted.
+
 		\item Authenticated clients 
+
+			This is linked to the system being secure, without any kind of authentication anybody can send data to the server and get a response or trigger an event, this
+			is highly undesirable.
+
+		\item Synced databases
+
+			Keeping all of the clients and server updated with the same version of database is something which would require a \textit{lot} of work from the system administrator,
+			this currently is an unacceptable amount. Ideally, whenever a client is made on an \textit{authenticated} device, it'd tell the server and the server would inform the
+			rest of the clients.
+
 	\end{itemize}	
 
 \section{End User Evidence Appendix}
 
-	\subsection{Questionnaire}
+	\subsection{Interview}
+
+		\begin{figure}
+			\caption{Feedback interview}
+			\label{lst:interview}
+			\lstinputlisting{../shared_assets/eval_interview.log}
+			\includegraphics[scale=0.7]{../shared_assets/pmilnesignature.png}
+		\end{figure}
 
 \end{document}
