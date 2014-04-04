@@ -8,6 +8,7 @@ from ConfigParser import ConfigParser
 class Client:
     def __init__(self):
         self.get_cfg()
+        self.check_dir()
 
         self.cam = SimpleCV.Camera()
 
@@ -101,6 +102,6 @@ class Client:
         return data
 
 if __name__ == "__main__":
+    print "starting client..."
     c = Client()
-    c.create_usr("harry")
     c.start()

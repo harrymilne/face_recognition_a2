@@ -10,6 +10,7 @@ class Handler(LineReceiver):
     def __init__(self, parent):
         self.parent = parent
         self.sql = SQLInterface("access.sqlite3")
+	self.sql.create_tables()
 
 
     def reply_state(self):
